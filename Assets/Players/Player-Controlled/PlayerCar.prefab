@@ -244,6 +244,9 @@ MonoBehaviour:
   acceleration: 0
   decceleration: 5
   turnSpeed: 3.5
+  fuelCapacity: 100
+  fuelConsumptionRate: 1
+  currentFuel: 0
 --- !u!54 &5462093660779685098
 Rigidbody:
   m_ObjectHideFlags: 0

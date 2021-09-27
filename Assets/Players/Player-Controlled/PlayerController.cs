@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public delegate void CarDeadDelegate();
+    public static event CarDeadDelegate CarDead;
+
     // The top speed of the car
     public float maxSpeed;
     // The slowest running speed of the car (max turning)
@@ -14,9 +17,14 @@ public class PlayerController : MonoBehaviour
     public float decceleration;
     // The turn speed of the car
     public float turnSpeed;
+    public float fuelCapacity;
+    public float fuelConsumptionRate;
+
+    public float currentFuel;
 
     private bool isX;
     private Rigidbody rb;
+
 
     // used for determining velocity
     private int lastDirection;
@@ -24,6 +32,18 @@ public class PlayerController : MonoBehaviour
     private float slowFactorDecay;
     private float slowFactor;
     private bool isRunning;
+
+    private void OnEnable()
+    {
+        // setup event listeners
+        GameController.GameEnded += OnGameOver;
+    }
+
+    private void OnDisable()
+    {
+        // clean up event listeners
+        GameController.GameEnded -= OnGameOver;
+    }
 
     void Start()
     {
@@ -35,10 +55,21 @@ public class PlayerController : MonoBehaviour
         slowFactorGrowth = 1f;
         slowFactorDecay = 10000f;
         lastDirection = 1;
+        currentFuel = fuelCapacity;
     }
 
     void Update()
     {
+        // check if the car is out of fuel
+        if (currentFuel == 0)
+        {
+            // kill the car
+            if (CarDead != null)
+            {
+                CarDead();
+            }
+        }
+
         // only get input if the car is running
         if (isRunning)
         {
@@ -63,6 +94,9 @@ public class PlayerController : MonoBehaviour
             Debug.DrawRay(
                 transform.position, transform.forward * Mathf.Abs(slowFactor) * 10, Color.red,
                 Time.deltaTime, false);
+
+            // handle the car's fuel
+            currentFuel = Mathf.Max(0, currentFuel - (fuelConsumptionRate * Time.deltaTime));
         }
     }
 
@@ -105,5 +139,26 @@ public class PlayerController : MonoBehaviour
             //    // update the velocity of the car
             //    rb.velocity = new Vector3(newVelocity.x, rb.velocity.y, newVelocity.z);
         }
-    }   
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // check if the other object is a wall
+        if (other.tag == "Wall")
+        {
+            Debug.Log("Hit a wall!");
+
+            // kill the car
+            if (CarDead != null)
+            {
+                CarDead();
+            }
+        }
+    }
+
+    void OnGameOver()
+    {
+        // turn off the car
+        isRunning = false;
+    }
 }
