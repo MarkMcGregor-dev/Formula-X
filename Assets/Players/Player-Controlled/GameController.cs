@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -14,12 +15,14 @@ public class GameController : MonoBehaviour
     {
         // setup event listeners
         PlayerController.CarDead += EndGame;
+        EndGameUIController.RestartRequest += RestartGame;
     }
 
     private void OnDisable()
     {
         // clean up event listeners
         PlayerController.CarDead -= EndGame;
+        EndGameUIController.RestartRequest -= RestartGame;
     }
 
     // Start is called before the first frame update
@@ -40,5 +43,10 @@ public class GameController : MonoBehaviour
         {
             GameEnded();
         }
+    }
+
+    void RestartGame()
+    {
+        SceneManager.LoadScene("InGame");
     }
 }
