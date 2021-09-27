@@ -91,7 +91,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 1558101899757326082}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5000001
   m_Height: 2
   m_Direction: 1
@@ -187,7 +187,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 1990102897535325031}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5000001
   m_Height: 2
   m_Direction: 1
@@ -203,6 +203,8 @@ GameObject:
   - component: {fileID: 2835171244871819457}
   - component: {fileID: 7878378590707003523}
   - component: {fileID: 5462093660779685098}
+  - component: {fileID: 6971706482858788237}
+  - component: {fileID: 1914045039046526099}
   m_Layer: 0
   m_Name: PlayerCar
   m_TagString: Untagged
@@ -237,9 +239,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a1243216c1421041b38b76a4ab0b865, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 30
+  maxSpeed: 50
+  minSpeed: 15
   acceleration: 0
-  turnSpeed: 3
+  decceleration: 5
+  turnSpeed: 3.5
 --- !u!54 &5462093660779685098
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -248,14 +252,40 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2166529628123848951}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &6971706482858788237
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2166529628123848951}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.7255485, z: 2.0017009}
+  m_Center: {x: 0, y: 0.3619653, z: 0.0012507439}
+--- !u!135 &1914045039046526099
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2166529628123848951}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.32
+  m_Center: {x: 0, y: 0.45, z: 1.07}
 --- !u!1 &3122193720558188471
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,7 +377,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 3122193720558188471}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5000001
   m_Height: 2
   m_Direction: 1
@@ -443,7 +473,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 3407274539779810120}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5000001
   m_Height: 2
   m_Direction: 1
@@ -539,7 +569,7 @@ BoxCollider:
   m_GameObject: {fileID: 4627889046627028514}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -634,7 +664,7 @@ BoxCollider:
   m_GameObject: {fileID: 5202859823208648557}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -729,7 +759,7 @@ BoxCollider:
   m_GameObject: {fileID: 7195136362884574392}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
