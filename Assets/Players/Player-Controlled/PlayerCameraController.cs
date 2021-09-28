@@ -10,7 +10,7 @@ public class PlayerCameraController : MonoBehaviour
     void Start()
     {
         // set the starting position
-        startingPosition = transform.position;
+        startingPosition = transform.localPosition;
 
         // get the player car
         playerCar = GameObject.Find("PlayerCar");
@@ -18,9 +18,9 @@ public class PlayerCameraController : MonoBehaviour
 
     void Update()
     {
-        transform.position = new Vector3(
-            startingPosition.x + playerCar.transform.position.x,
+        transform.localPosition = new Vector3(
+            startingPosition.x + playerCar.transform.localPosition.x,
             startingPosition.y,
-            startingPosition.z + playerCar.transform.position.z);
+            startingPosition.z + playerCar.transform.localPosition.z);
     }
 }

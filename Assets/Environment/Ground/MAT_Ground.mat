@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MAT_GroundMaterial
+  m_Name: MAT_Ground
   m_Shader: {fileID: -6465566751694194690, guid: aef77b55afad8cc4db0d335b0a6ae71c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -105,7 +105,7 @@ Material:
     m_Colors:
     - Color_4234f74dd02f49d5a48978718c271359: {r: 0.14150935, g: 0.14150935, b: 0.14150935, a: 0}
     - Color_901b171acc4b4043853ffd5efdb2a6c0: {r: 0, g: 0, b: 0, a: 0}
-    - Vector2_1653e381acc8469b82fcdd543231bfaa: {r: 75, g: 75, b: 1, a: 1}
+    - Vector2_1653e381acc8469b82fcdd543231bfaa: {r: 50, g: 50, b: 1.29, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

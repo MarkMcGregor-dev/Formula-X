@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public delegate void CarDeadDelegate();
+    public delegate void CarLappedDelegate();
+    public static event CarLappedDelegate CarLapped;
+
+    public delegate void CarDeadDelegate(string reason);
     public static event CarDeadDelegate CarDead;
 
     // The top speed of the car
@@ -60,43 +63,46 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // check if the car is out of fuel
-        if (currentFuel == 0)
-        {
-            // kill the car
-            if (CarDead != null)
-            {
-                CarDead();
-            }
-        }
-
         // only get input if the car is running
         if (isRunning)
         {
-            // get input
-            isX = Input.GetKey(KeyCode.X);
-
-            int direction = isX ? 1 : -1;
-
-            // if the car is turning more
-            if (lastDirection == direction)
+            // check if the car is out of fuel
+            if (currentFuel == 0)
             {
-                slowFactor = Mathf.Min(1, slowFactor + (slowFactorGrowth * Time.deltaTime));
+                Debug.Log("Ran out of fuel");
 
-            // if the car is straightening out
+                // kill the car
+                if (CarDead != null)
+                {
+                    CarDead("Out of Fuel");
+                }
             } else
             {
-                slowFactor = Mathf.Max(0, slowFactor - (slowFactorDecay * Time.deltaTime));
+                // get input
+                isX = Input.GetKey(KeyCode.X);
+
+                int direction = isX ? 1 : -1;
+
+                // if the car is turning more
+                if (lastDirection == direction)
+                {
+                    slowFactor = Mathf.Min(1, slowFactor + (slowFactorGrowth * Time.deltaTime));
+
+                // if the car is straightening out
+                } else
+                {
+                    slowFactor = Mathf.Max(0, slowFactor - (slowFactorDecay * Time.deltaTime));
+                }
+
+                lastDirection = direction;
+
+                Debug.DrawRay(
+                    transform.position, transform.forward * Mathf.Abs(slowFactor) * 10, Color.red,
+                    Time.deltaTime, false);
+
+                // handle the car's fuel
+                currentFuel = Mathf.Max(0, currentFuel - (fuelConsumptionRate * Time.deltaTime));
             }
-
-            lastDirection = direction;
-
-            Debug.DrawRay(
-                transform.position, transform.forward * Mathf.Abs(slowFactor) * 10, Color.red,
-                Time.deltaTime, false);
-
-            // handle the car's fuel
-            currentFuel = Mathf.Max(0, currentFuel - (fuelConsumptionRate * Time.deltaTime));
         }
     }
 
@@ -143,20 +149,44 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // check if the other object is a wall
-        if (other.tag == "Wall")
+        if (isRunning)
         {
-            Debug.Log("Hit a wall!");
+            switch (other.tag) {
+                // if the other object is a wall
+                case "Wall":
+                    // kill the car
+                    Debug.Log("Hit a wall!");
+                    if (CarDead != null)
+                    {
+                        CarDead("You Crashed");
+                    }
 
-            // kill the car
-            if (CarDead != null)
-            {
-                CarDead();
+                    break;
+
+                // if the other object is a fuel capsule
+                case "FuelCapsule":
+                    // replenish the fuel amount
+                    currentFuel = fuelCapacity;
+
+                    // trigger the fuel capsule's 'collect' event
+                    other.GetComponent<FuelCapsuleBehaviour>().Collect();
+
+                    break;
+
+                // if the other object is the finish line
+                case "FinishLine":
+                    // lap the car
+                    if (CarLapped != null)
+                    {
+                        CarLapped();
+                    }
+
+                    break;
             }
         }
     }
 
-    void OnGameOver()
+    void OnGameOver(string gameOverString)
     {
         // turn off the car
         isRunning = false;
