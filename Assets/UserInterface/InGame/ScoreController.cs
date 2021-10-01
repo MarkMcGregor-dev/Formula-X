@@ -18,6 +18,7 @@ public class ScoreController : MonoBehaviour
         // setup event listeners
         GameController.ScoreUpdated += OnScoreUpdated;
         GameController.GameEnded += OnGameOver;
+        GameController.GameStarted += OnGameRestart;
     }
 
     private void OnDisable()
@@ -25,6 +26,7 @@ public class ScoreController : MonoBehaviour
         // clean up event listeners
         GameController.ScoreUpdated -= OnScoreUpdated;
         GameController.GameEnded -= OnGameOver;
+        GameController.GameStarted -= OnGameRestart;
     }
 
     void Start()
@@ -63,6 +65,16 @@ public class ScoreController : MonoBehaviour
         shouldUpdate = false;
 
         // hide the score panel
-        gameObject.SetActive(false);
+        transform.GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(1).gameObject.SetActive(false);
+    }
+
+    private void OnGameRestart()
+    {
+        shouldUpdate = true;
+
+        // show the score panel
+        transform.GetChild(0).gameObject.SetActive(true);
+        transform.GetChild(1).gameObject.SetActive(true);
     }
 }

@@ -98,7 +98,7 @@ public class GameController : MonoBehaviour
             timeOfLastLap = currentTime;
 
             // update the best lap time if applicable
-            if (bestLapTime == 0 || timeOfLastLap < bestLapTime)
+            if (bestLapTime == 0 || lapDuration < bestLapTime)
             {
                 bestLapTime = timeOfLastLap;
             }
@@ -107,6 +107,8 @@ public class GameController : MonoBehaviour
 
     void RestartGame()
     {
-        SceneManager.LoadScene("InGame");
+        //SceneManager.LoadScene("InGame");
+
+        StartGame();
     }
 }

@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour
     private bool isX;
     private Rigidbody rb;
 
+    private Vector3 startingPosition;
+    private Quaternion startingRotation;
 
     // used for determining velocity
     private int lastDirection;
@@ -40,17 +42,21 @@ public class PlayerController : MonoBehaviour
     {
         // setup event listeners
         GameController.GameEnded += OnGameOver;
+        GameController.GameStarted += OnGameRestart;
     }
 
     private void OnDisable()
     {
         // clean up event listeners
         GameController.GameEnded -= OnGameOver;
+        GameController.GameStarted -= OnGameRestart;
     }
 
     void Start()
     {
         // setup variables
+        startingPosition = transform.position;
+        startingRotation = transform.rotation;
         isRunning = true;
         isX = false;
         rb = gameObject.GetComponent<Rigidbody>();
@@ -190,5 +196,18 @@ public class PlayerController : MonoBehaviour
     {
         // turn off the car
         isRunning = false;
+    }
+
+    void OnGameRestart()
+    {
+        // move the car to the starting position
+        transform.position = startingPosition;
+        transform.rotation = startingRotation;
+
+        // reset variables
+        isRunning = true;
+        isX = false;
+        lastDirection = 1;
+        currentFuel = fuelCapacity;
     }
 }

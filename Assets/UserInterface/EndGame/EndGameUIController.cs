@@ -52,17 +52,24 @@ public class EndGameUIController : MonoBehaviour
     {
         // create event listeners
         GameController.GameEnded += OnGameOver;
+        GameController.GameStarted += OnGameRestart;
     }
 
     private void OnDisable()
     {
         // clean up event listeners
         GameController.GameEnded -= OnGameOver;
+        GameController.GameStarted -= OnGameRestart;
     }
 
     void OnGameOver(string reason)
     {
         EnableUI(reason);
+    }
+
+    void OnGameRestart()
+    {
+        DisableUI();
     }
 
     private void EnableUI(string message)
@@ -83,5 +90,12 @@ public class EndGameUIController : MonoBehaviour
 
         timeWhenEnabled = Time.time;
         isEnabled = true;
+    }
+
+    private void DisableUI()
+    {
+        gameOverUI.SetActive(false);
+        isEnabled = false;
+        canRestart = false;
     }
 }
