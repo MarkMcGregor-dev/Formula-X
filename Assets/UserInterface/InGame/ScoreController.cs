@@ -34,7 +34,7 @@ public class ScoreController : MonoBehaviour
     void Start()
     {
         // setup variables
-        shouldUpdate = true;
+        shouldUpdate = false;
         playerController = GameObject.Find("PlayerCar").GetComponent<PlayerController>();
         gameController = GameObject.Find("GameController").GetComponent<GameController>();
         scoreText = transform.Find("ScorePanel").Find("Score").GetComponent<Text>();

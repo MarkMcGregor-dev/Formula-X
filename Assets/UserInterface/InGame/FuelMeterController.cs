@@ -13,6 +13,7 @@ public class FuelMeterController : MonoBehaviour
     {
         // setup event listeners
         GameController.GameEnded += OnGameOver;
+        GameController.GameReset += OnGameReset;
         GameController.GameStarted += OnGameStart;
     }
 
@@ -20,6 +21,7 @@ public class FuelMeterController : MonoBehaviour
     {
         // clean up event listeners
         GameController.GameEnded -= OnGameOver;
+        GameController.GameReset -= OnGameReset;
         GameController.GameStarted -= OnGameStart;
     }
 
@@ -45,6 +47,11 @@ public class FuelMeterController : MonoBehaviour
     }
 
     private void OnGameStart()
+    {
+        shouldUpdate = true;
+    }
+
+    private void OnGameReset()
     {
         shouldUpdate = true;
     }

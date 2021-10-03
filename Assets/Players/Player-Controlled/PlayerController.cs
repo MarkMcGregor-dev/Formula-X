@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
         // setup variables
         startingPosition = transform.position;
         startingRotation = transform.rotation;
-        isRunning = true;
+        isRunning = false;
         isX = false;
         rb = gameObject.GetComponent<Rigidbody>();
         slowFactor = 0;
