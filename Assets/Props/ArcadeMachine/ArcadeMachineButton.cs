@@ -15,7 +15,7 @@ public class ArcadeMachineButton : MonoBehaviour
     void Start()
     {
         // setup variables
-        distanceThreshold = 0.001f;
+        distanceThreshold = 0.01f;
         pressedLastFrame = false;
         startingPosition = transform.position;
     }
@@ -50,6 +50,9 @@ public class ArcadeMachineButton : MonoBehaviour
             // nudge the button towards it's target position
             transform.position = Vector3.Lerp(
                 transform.position, desiredPosition, desiredSpeed * Time.deltaTime);
+        } else
+        {
+            transform.position = desiredPosition;
         }
     }
 }

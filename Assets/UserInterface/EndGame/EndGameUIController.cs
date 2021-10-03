@@ -7,13 +7,13 @@ using UnityEngine.UI;
 public class EndGameUIController : MonoBehaviour
 {
     public delegate void RestartDelegate();
-    public static event RestartDelegate RestartRequest;
+    public static event RestartDelegate ResetRequest;
 
     public float restartDelay;
 
     private GameController gameController;
     private GameObject gameOverUI;
-    private bool canRestart;
+    private bool canReset;
     private float timeWhenEnabled;
     private bool isEnabled;
 
@@ -23,28 +23,28 @@ public class EndGameUIController : MonoBehaviour
         gameController = GameObject.Find("GameController").GetComponent<GameController>();
         gameOverUI = transform.Find("Game Over Panel").gameObject;
         gameOverUI.SetActive(false);
-        canRestart = false;
+        canReset = false;
         isEnabled = false;
     }
 
     private void Update()
     {
         // check if the player is allowed to restart yet
-        if (isEnabled && canRestart) {
+        if (isEnabled && canReset) {
             // check for restart
             if (Input.GetKey(KeyCode.X))
             {
-                Debug.Log("Restart requested!");
+                Debug.Log("Reset requested!");
 
-                if (RestartRequest != null)
+                if (ResetRequest != null)
                 {
-                    RestartRequest();
+                    ResetRequest();
                 }
             }
         // check if the time to show the restart button is done
         } else if (isEnabled && (Time.time - timeWhenEnabled) >= restartDelay)
         {
-            canRestart = true;
+            canReset = true;
         }
     }
 
@@ -52,14 +52,14 @@ public class EndGameUIController : MonoBehaviour
     {
         // create event listeners
         GameController.GameEnded += OnGameOver;
-        GameController.GameStarted += OnGameRestart;
+        GameController.GameReset += OnGameReset;
     }
 
     private void OnDisable()
     {
         // clean up event listeners
         GameController.GameEnded -= OnGameOver;
-        GameController.GameStarted -= OnGameRestart;
+        GameController.GameReset -= OnGameReset;
     }
 
     void OnGameOver(string reason)
@@ -67,7 +67,7 @@ public class EndGameUIController : MonoBehaviour
         EnableUI(reason);
     }
 
-    void OnGameRestart()
+    void OnGameReset()
     {
         DisableUI();
     }
@@ -96,6 +96,6 @@ public class EndGameUIController : MonoBehaviour
     {
         gameOverUI.SetActive(false);
         isEnabled = false;
-        canRestart = false;
+        canReset = false;
     }
 }

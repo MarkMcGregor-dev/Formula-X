@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
     public delegate void CarDeadDelegate(string reason);
     public static event CarDeadDelegate CarDead;
 
+    public delegate void CarIgnitionDelegate();
+    public static event CarIgnitionDelegate CarIgnition;
+
     // The top speed of the car
     public float maxSpeed;
     // The slowest running speed of the car (max turning)
@@ -42,14 +45,16 @@ public class PlayerController : MonoBehaviour
     {
         // setup event listeners
         GameController.GameEnded += OnGameOver;
-        GameController.GameStarted += OnGameRestart;
+        GameController.GameReset += OnGameReset;
+        GameController.GameStarted += OnGameStart;
     }
 
     private void OnDisable()
     {
         // clean up event listeners
         GameController.GameEnded -= OnGameOver;
-        GameController.GameStarted -= OnGameRestart;
+        GameController.GameReset -= OnGameReset;
+        GameController.GameStarted -= OnGameStart;
     }
 
     void Start()
@@ -69,6 +74,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // get input
+        isX = Input.GetKey(KeyCode.X);
+
         // only get input if the car is running
         if (isRunning)
         {
@@ -84,9 +92,6 @@ public class PlayerController : MonoBehaviour
                 }
             } else
             {
-                // get input
-                isX = Input.GetKey(KeyCode.X);
-
                 int direction = isX ? 1 : -1;
 
                 // if the car is turning more
@@ -108,6 +113,12 @@ public class PlayerController : MonoBehaviour
 
                 // handle the car's fuel
                 currentFuel = Mathf.Max(0, currentFuel - (fuelConsumptionRate * Time.deltaTime));
+            }
+        } else
+        {
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                if (CarIgnition != null) CarIgnition();
             }
         }
     }
@@ -187,6 +198,9 @@ public class PlayerController : MonoBehaviour
                         CarLapped();
                     }
 
+                    // replenish fuel
+                    currentFuel = fuelCapacity;
+
                     break;
             }
         }
@@ -198,14 +212,19 @@ public class PlayerController : MonoBehaviour
         isRunning = false;
     }
 
-    void OnGameRestart()
+    void OnGameStart()
+    {
+        isRunning = true;
+    }
+
+    void OnGameReset()
     {
         // move the car to the starting position
         transform.position = startingPosition;
         transform.rotation = startingRotation;
 
         // reset variables
-        isRunning = true;
+        isRunning = false;
         isX = false;
         lastDirection = 1;
         currentFuel = fuelCapacity;

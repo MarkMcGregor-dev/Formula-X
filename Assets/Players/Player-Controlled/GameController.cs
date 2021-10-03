@@ -8,7 +8,10 @@ public class GameController : MonoBehaviour
     // events
     public delegate void StartGameDelegate();
     public static event StartGameDelegate GameStarted;
-    
+
+    public delegate void ResetGameDelegate();
+    public static event ResetGameDelegate GameReset;
+
     public delegate void EndGameDelegate(string GameOverString);
     public static event EndGameDelegate GameEnded;
     
@@ -25,15 +28,17 @@ public class GameController : MonoBehaviour
     public float bestLapTime;
     public int numberOfLaps;
 
-    private bool isGameOver;
-    
+    public float delayAfterReset;
+
+    private bool waitingForIgnition;
 
     private void OnEnable()
     {
         // setup event listeners
         PlayerController.CarDead += EndGame;
         PlayerController.CarLapped += OnCarLapped;
-        EndGameUIController.RestartRequest += RestartGame;
+        PlayerController.CarIgnition += OnCarIgnition;
+        EndGameUIController.ResetRequest += RestartGame;
     }
 
     private void OnDisable()
@@ -41,24 +46,41 @@ public class GameController : MonoBehaviour
         // clean up event listeners
         PlayerController.CarDead -= EndGame;
         PlayerController.CarLapped -= OnCarLapped;
-        EndGameUIController.RestartRequest -= RestartGame;
+        PlayerController.CarIgnition -= OnCarIgnition;
+        EndGameUIController.ResetRequest -= RestartGame;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         // setup variables
-        isGameOver = false;
         timeOfLastLap = Time.time;
         numberOfLaps = 0;
         bestLapTime = 0f;
+        waitingForIgnition = true;
+    }
+
+    private void OnCarIgnition()
+    {
+        if (waitingForIgnition) StartGame();
     }
 
     private void StartGame()
     {
+        timeOfLastLap = Time.time;
+        waitingForIgnition = false;
+
         if (GameStarted != null)
         {
             GameStarted();
+        }
+    }
+
+    private void ResetGame()
+    {
+        if (GameReset != null)
+        {
+            GameReset();
         }
     }
 
@@ -107,8 +129,7 @@ public class GameController : MonoBehaviour
 
     void RestartGame()
     {
-        //SceneManager.LoadScene("InGame");
-
-        StartGame();
+        ResetGame();
+        waitingForIgnition = true;
     }
 }

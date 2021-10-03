@@ -18,7 +18,8 @@ public class ScoreController : MonoBehaviour
         // setup event listeners
         GameController.ScoreUpdated += OnScoreUpdated;
         GameController.GameEnded += OnGameOver;
-        GameController.GameStarted += OnGameRestart;
+        GameController.GameReset += OnGameReset;
+        GameController.GameStarted += OnGameStart;
     }
 
     private void OnDisable()
@@ -26,7 +27,8 @@ public class ScoreController : MonoBehaviour
         // clean up event listeners
         GameController.ScoreUpdated -= OnScoreUpdated;
         GameController.GameEnded -= OnGameOver;
-        GameController.GameStarted -= OnGameRestart;
+        GameController.GameReset -= OnGameReset;
+        GameController.GameStarted -= OnGameStart;
     }
 
     void Start()
@@ -69,12 +71,20 @@ public class ScoreController : MonoBehaviour
         transform.GetChild(1).gameObject.SetActive(false);
     }
 
-    private void OnGameRestart()
+    private void OnGameReset()
     {
-        shouldUpdate = true;
+        shouldUpdate = false;
+
+        // reset the lap time
+        lapTimeText.text = TimeSpan.FromSeconds(0f).ToString(@"mm\:ss\.ff");
 
         // show the score panel
         transform.GetChild(0).gameObject.SetActive(true);
         transform.GetChild(1).gameObject.SetActive(true);
+    }
+
+    private void OnGameStart()
+    {
+        shouldUpdate = true;
     }
 }

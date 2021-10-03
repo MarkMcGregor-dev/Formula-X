@@ -12,13 +12,15 @@ public class FuelMeterController : MonoBehaviour
     private void OnEnable()
     {
         // setup event listeners
-
+        GameController.GameEnded += OnGameOver;
+        GameController.GameStarted += OnGameStart;
     }
 
     private void OnDisable()
     {
         // clean up event listeners
-
+        GameController.GameEnded -= OnGameOver;
+        GameController.GameStarted -= OnGameStart;
     }
 
     // Start is called before the first frame update
@@ -47,7 +49,7 @@ public class FuelMeterController : MonoBehaviour
         shouldUpdate = true;
     }
 
-    private void OnGameOver()
+    private void OnGameOver(string reason)
     {
         shouldUpdate = false;
     }
