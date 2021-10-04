@@ -179,7 +179,7 @@ public class GameController : MonoBehaviour
                 // update the best lap time if applicable
                 if (bestLapTime == 0 || lapDuration < bestLapTime)
                 {
-                    bestLapTime = timeOfLastLap;
+                    bestLapTime = lapDuration;
                 }
             } 
 

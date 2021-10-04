@@ -11,11 +11,13 @@ public class FuelCapsuleBehaviour : MonoBehaviour
 
     private bool isVisible;
     private float timeWhenCollected;
+    private AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
     {
         // setup variables
+        audioSource = gameObject.GetComponent<AudioSource>();
         isVisible = false;
         fuelCollider = gameObject.GetComponent<SphereCollider>();
         mesh = transform.Find("Capsule").gameObject;
@@ -36,6 +38,7 @@ public class FuelCapsuleBehaviour : MonoBehaviour
     public void Collect()
     {
         // hide and disable the capsule
+        audioSource.Play();
         mesh.SetActive(false);
         fuelCollider.enabled = false;
         isVisible = false;
