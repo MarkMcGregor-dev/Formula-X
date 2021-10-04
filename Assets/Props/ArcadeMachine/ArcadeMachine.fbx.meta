@@ -7,6 +7,16 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: ArcadeMachine
+    second: {fileID: 2100000, guid: 31b6b3c7b1ee16241ad344615cb48000, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Button
+    second: {fileID: 2100000, guid: 3c0a9eda3522a7547b6c9178e940d779, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Screen
     second: {fileID: 2100000, guid: 11b602d61f5dfe647b8e5054081720de, type: 2}
   materials:
