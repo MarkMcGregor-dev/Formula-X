@@ -42,6 +42,7 @@ public class GameController : MonoBehaviour
     public int indexOfLastCheckpoint;
 
     private bool waitingForIgnition;
+    private float timeWhenStartedWaiting;
     private int lastCheckpoint;
 
     private void OnEnable()
@@ -73,11 +74,15 @@ public class GameController : MonoBehaviour
         numberOfLaps = 0;
         bestLapTime = 0f;
         waitingForIgnition = true;
+        timeWhenStartedWaiting = Time.time;
     }
 
     private void OnCarIgnition()
     {
-        if (waitingForIgnition) StartGame();
+        if (waitingForIgnition && (Time.time - timeWhenStartedWaiting) >= 0.25f)
+        {
+            StartGame();
+        }
     }
 
     private void StartGame()
@@ -190,5 +195,6 @@ public class GameController : MonoBehaviour
     {
         ResetGame();
         waitingForIgnition = true;
+        timeWhenStartedWaiting = Time.time;
     }
 }
