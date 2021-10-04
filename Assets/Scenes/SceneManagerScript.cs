@@ -11,8 +11,17 @@ public enum GameState
     AtMenu
 }
 
+public enum Scene
+{
+    InGame,
+    Menu
+}
+
 public class SceneManagerScript : MonoBehaviour
 {
+    public delegate void SceneChangedDelegate(Scene scene);
+    public static event SceneChangedDelegate SceneChanged;
+
     public float idleTimeToMenu;
 
     private GameState currentState;
@@ -86,6 +95,7 @@ public class SceneManagerScript : MonoBehaviour
         ClearScenes();
         SceneManager.LoadSceneAsync("Menu", LoadSceneMode.Additive);
         currentState = GameState.AtMenu;
+        if (SceneChanged != null) SceneChanged(Scene.Menu);
     }
 
     private void ToGame()
@@ -93,6 +103,7 @@ public class SceneManagerScript : MonoBehaviour
         ClearScenes();
         SceneManager.LoadSceneAsync("InGame", LoadSceneMode.Additive);
         currentState = GameState.WaitingForIgnition;
+        if (SceneChanged != null) SceneChanged(Scene.InGame);
     }
 
     private void OnToGameRequest()
