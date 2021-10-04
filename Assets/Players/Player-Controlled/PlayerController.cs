@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public delegate void CarLappedDelegate();
-    public static event CarLappedDelegate CarLapped;
+    public delegate void CarCrossedLineDelegate();
+    public static event CarCrossedLineDelegate CarCrossedLine;
 
     public delegate void CarDeadDelegate(string reason);
     public static event CarDeadDelegate CarDead;
@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
         GameController.GameEnded += OnGameOver;
         GameController.GameReset += OnGameReset;
         GameController.GameStarted += OnGameStart;
+        GameController.PlayerLapped += OnLapped;
     }
 
     private void OnDisable()
@@ -55,6 +56,7 @@ public class PlayerController : MonoBehaviour
         GameController.GameEnded -= OnGameOver;
         GameController.GameReset -= OnGameReset;
         GameController.GameStarted -= OnGameStart;
+        GameController.PlayerLapped -= OnLapped;
     }
 
     void Start()
@@ -173,10 +175,7 @@ public class PlayerController : MonoBehaviour
                 case "Wall":
                     // kill the car
                     Debug.Log("Hit a wall!");
-                    if (CarDead != null)
-                    {
-                        CarDead("You Crashed");
-                    }
+                    if (CarDead != null) CarDead("You Crashed");
 
                     break;
 
@@ -193,17 +192,17 @@ public class PlayerController : MonoBehaviour
                 // if the other object is the finish line
                 case "FinishLine":
                     // lap the car
-                    if (CarLapped != null)
-                    {
-                        CarLapped();
-                    }
-
-                    // replenish fuel
-                    currentFuel = fuelCapacity;
+                    if (CarCrossedLine != null) CarCrossedLine();
 
                     break;
             }
         }
+    }
+
+    private void OnLapped()
+    {
+        // replenish fuel
+        currentFuel = fuelCapacity;
     }
 
     void OnGameOver(string gameOverString)

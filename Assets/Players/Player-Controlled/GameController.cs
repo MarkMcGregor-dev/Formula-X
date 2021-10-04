@@ -18,6 +18,15 @@ public class GameController : MonoBehaviour
     public delegate void ScoreUpdatedDelegate(float newScore, float lastLapDuration);
     public static event ScoreUpdatedDelegate ScoreUpdated;
 
+    public delegate void PlayerRightWayDelegate();
+    public static PlayerRightWayDelegate PlayerRightWay;
+
+    public delegate void PlayerWrongWayDelegate();
+    public static event PlayerWrongWayDelegate PlayerWrongWay;
+
+    public delegate void PlayerLappedDelegate();
+    public static event PlayerLappedDelegate PlayerLapped;
+
     // variables
     public float scoreMultiplier;
     public float lowestScorableLapDuration;
@@ -30,30 +39,36 @@ public class GameController : MonoBehaviour
 
     public float delayAfterReset;
 
+    public int indexOfLastCheckpoint;
+
     private bool waitingForIgnition;
+    private int lastCheckpoint;
 
     private void OnEnable()
     {
         // setup event listeners
         PlayerController.CarDead += EndGame;
-        PlayerController.CarLapped += OnCarLapped;
+        PlayerController.CarCrossedLine += OnCarCrossedLine;
         PlayerController.CarIgnition += OnCarIgnition;
         EndGameUIController.ResetRequest += RestartGame;
+        CheckpointScript.CheckpointCrossed += OnCheckpointCrossed;
     }
 
     private void OnDisable()
     {
         // clean up event listeners
         PlayerController.CarDead -= EndGame;
-        PlayerController.CarLapped -= OnCarLapped;
+        PlayerController.CarCrossedLine -= OnCarCrossedLine;
         PlayerController.CarIgnition -= OnCarIgnition;
         EndGameUIController.ResetRequest -= RestartGame;
+        CheckpointScript.CheckpointCrossed -= OnCheckpointCrossed;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         // setup variables
+        lastCheckpoint = 0;
         timeOfLastLap = Time.time;
         numberOfLaps = 0;
         bestLapTime = 0f;
@@ -76,8 +91,33 @@ public class GameController : MonoBehaviour
         }
     }
 
+    private void OnCheckpointCrossed(int checkpointNum)
+    {
+        Debug.Log("Last checkpoint: " + lastCheckpoint);
+
+        // check if the player is headed the correct way
+        //if (checkpointNum >= lastCheckpoint)
+        if ((checkpointNum - lastCheckpoint) == 1 || (checkpointNum - lastCheckpoint) == 0)
+        {
+            // send a right way message
+            if (PlayerRightWay != null) PlayerRightWay();
+
+            // update lastCheckpoint
+            lastCheckpoint = checkpointNum;
+
+        // if the player is headed the wrong way
+        } else
+        {
+            // send a wrong way message
+            if (PlayerWrongWay != null) PlayerWrongWay();
+        }
+    }
+
     private void ResetGame()
     {
+        // reset variables
+        lastCheckpoint = 0;
+
         if (GameReset != null)
         {
             GameReset();
@@ -92,39 +132,58 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void OnCarLapped()
+    private void OnCarCrossedLine()
     {
-        // calculate the duration of the lap
-        float currentTime = Time.time;
-        float lapDuration = currentTime - timeOfLastLap;
-
-        // check that the time is within the lap activation pause duration
-        if (lapDuration >= lapActivationPauseDuration)
+        // check that the player came from the last checkpoint
+        if (lastCheckpoint == indexOfLastCheckpoint)
         {
-            Debug.Log("Lap Duration: " + lapDuration.ToString());
+            // send a right way event
+            if (PlayerRightWay != null) PlayerRightWay();
 
-            // calculate the score increment given the lapDuration
-            float newScorePoints = Mathf.Round(scoreMultiplier * Mathf.Pow((Mathf.Max(1, lowestScorableLapDuration - lapDuration)), 2));
+            // send a player lapped event
+            if (PlayerLapped != null) PlayerLapped();
 
-            // update the score
-            score += newScorePoints;
-            if (ScoreUpdated != null)
+            // update the last checkpoint
+            lastCheckpoint = 0;
+
+            // calculate the duration of the lap
+            float currentTime = Time.time;
+            float lapDuration = currentTime - timeOfLastLap;
+
+            // check that the time is within the lap activation pause duration
+            if (lapDuration >= lapActivationPauseDuration)
             {
-                ScoreUpdated(score, lapDuration);
-            }
+                Debug.Log("Lap Duration: " + lapDuration.ToString());
 
-            // update the number of laps
-            numberOfLaps++;
+                // calculate the score increment given the lapDuration
+                float newScorePoints = Mathf.Round(scoreMultiplier * Mathf.Pow((Mathf.Max(1, lowestScorableLapDuration - lapDuration)), 2));
 
-            // update the last lap time
-            timeOfLastLap = currentTime;
+                // update the score
+                score += newScorePoints;
+                if (ScoreUpdated != null)
+                {
+                    ScoreUpdated(score, lapDuration);
+                }
 
-            // update the best lap time if applicable
-            if (bestLapTime == 0 || lapDuration < bestLapTime)
-            {
-                bestLapTime = timeOfLastLap;
-            }
-        } 
+                // update the number of laps
+                numberOfLaps++;
+
+                // update the last lap time
+                timeOfLastLap = currentTime;
+
+                // update the best lap time if applicable
+                if (bestLapTime == 0 || lapDuration < bestLapTime)
+                {
+                    bestLapTime = timeOfLastLap;
+                }
+            } 
+
+        // the player crossed the line the wrong way
+        } else if (lastCheckpoint != 0)
+        {
+            // send a wrong way message
+            if (PlayerWrongWay != null) PlayerWrongWay();
+        }
     }
 
     void RestartGame()
