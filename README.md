@@ -5,7 +5,7 @@
 The game was made over the course of two weeks using the Unity game engine. All assets were created by me, music and sound was sourced from [FreeSound.org](https://freesound.org/).
 
 ## Where to Play
-The game is available to play in your browser via [Itch.io](https://markmcgregor.itch.io/formula-x)
+### The game is available to play in your browser via [markmcgregor.itch.io/formula-x](https://markmcgregor.itch.io/formula-x)
 
 ## 🚗How to Play
 Race around the track as fast as possible without hitting the walls! You get more points for faster laps. Watch your fuel gauge on the left, be sure to pick up fuel capsules so you don't run out of gas!
